@@ -53,9 +53,13 @@ const InfoStep = ({ form }: Props) => {
   } = form
 
   const submitName: SubmitHandler<InfoState> = () => {
+    console.log('here submit************')
+    console.log('submitName')
     // setStep(Steps.INFO)
-    console.log('submit')
+    console.log(form.getValues())
   }
+
+  console.log(errors)
 
   const provinceId = watch('province')
   const agency_type = watch('agency_type')
@@ -104,7 +108,8 @@ const InfoStep = ({ form }: Props) => {
     })
   }
 
-  console.log(form.getValues())
+  console.log(watch('insurance_branch'))
+  console.log(watch('phone'))
 
   return (
     <form onSubmit={handleSubmit(submitName)}>
@@ -177,7 +182,7 @@ const InfoStep = ({ form }: Props) => {
 
       <Button
         classNames='mt-7'
-        disabled={Object.keys(errors).length > 0}
+        // disabled={Object.keys(errors).length > 0}
         onClick={handleSubmit(submitName)}
       >
         ادامه

@@ -10,7 +10,7 @@ interface PhoneInputProps {
   disabled?: boolean
   defaultCountryCode?: string
   name?: string
-  inputRef?: React.Ref<HTMLInputElement>
+  ref?: React.Ref<HTMLInputElement> // Changed from inputRef to ref
 }
 
 // Main phone input component
@@ -24,7 +24,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   disabled = false,
   defaultCountryCode = '+98',
   name,
-  inputRef
+  ref // Changed from inputRef to ref
 }) => {
   const [countryCode, setCountryCode] = useState(defaultCountryCode)
   const [mainNumber, setMainNumber] = useState('')
@@ -91,7 +91,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
             onChange={handleMainNumberChange}
             onBlur={onBlur}
             name={name}
-            ref={inputRef}
+            ref={ref} // Changed from inputRef to ref
             placeholder={placeholder}
             disabled={disabled}
             className='flex-1 px-3 py-3 text-sm text-gray-900 bg-transparent border-none outline-none placeholder-gray-400 disabled:bg-gray-50 disabled:text-gray-500'
