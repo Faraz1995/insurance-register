@@ -45,7 +45,7 @@ const OtepStep = ({ phoneNumber, setStep }: Props) => {
     setIsLoading(true)
     validateOtpApi(
       { phone_number: parsePhoneNumber(phoneNumber), code: otp },
-      (res) => {
+      () => {
         setIsLoading(false)
         setStep(Steps.NAME)
       },
