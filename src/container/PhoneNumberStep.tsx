@@ -1,9 +1,9 @@
 import Button from '../components/Button'
-import PhoneInput from '../components/MobileInput'
+import PhoneInput from '../components/PhoneInput'
 
 type Props = {
   phoneNumber: string
-  handlePhoneChange: (phoneNumber: string) => void
+  handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   submitPhone: () => void
   loading?: boolean
 }

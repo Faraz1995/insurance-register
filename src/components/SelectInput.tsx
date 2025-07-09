@@ -14,8 +14,8 @@ interface SelectInputProps
   searchable?: boolean
   fetchOptions?: (query: string) => Promise<Option[]>
   onChange?: (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => void
+  onBlur?: (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => void // Add onBlur
   name?: string
-  inputRef?: React.Ref<HTMLInputElement | HTMLSelectElement>
 }
 
 const SelectInput = React.forwardRef<
@@ -30,6 +30,7 @@ const SelectInput = React.forwardRef<
       value,
       name,
       onChange,
+      onBlur, // Add onBlur
       options = [],
       searchable = false,
       fetchOptions,
@@ -71,7 +72,14 @@ const SelectInput = React.forwardRef<
               onChange={(e) => {
                 setQuery(e.target.value)
                 setShowDropdown(true)
+                // Also call the onChange from register to update form state
+                if (onChange) {
+                  onChange({
+                    target: { value: e.target.value, name, type: 'text' }
+                  } as React.ChangeEvent<HTMLInputElement>)
+                }
               }}
+              onBlur={onBlur} // Add onBlur handler
               placeholder={placeholder}
               disabled={disabled}
               name={name}
@@ -108,6 +116,7 @@ const SelectInput = React.forwardRef<
               ref={ref as React.Ref<HTMLSelectElement>}
               value={value}
               onChange={onChange}
+              onBlur={onBlur} // Add onBlur handler
               disabled={disabled}
               {...rest}
               className='flex-1 px-3 py-3 text-sm text-gray-900 bg-transparent border-none outline-none disabled:bg-gray-50 disabled:text-gray-500 appearance-none'
