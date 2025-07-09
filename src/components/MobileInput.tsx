@@ -24,6 +24,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   useEffect(() => {
     if (value) {
       const match = value.match(/^(\+\d{2})(.*)$/)
+      console.log(match)
       if (match) {
         setCountryCode(match[1])
         setMainNumber(match[2])
@@ -56,7 +57,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   }
 
   return (
-    <div className={`w-full ${className}`}>
+    <div dir='ltr' className={`w-full ${className}`}>
       {label && <p className='block text-xs text-[#505050] mb-2 text-right'>{label}</p>}
 
       <div className='relative'>
