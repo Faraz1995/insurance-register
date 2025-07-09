@@ -5,3 +5,8 @@ export enum Steps {
   INFO = 'info',
   STATUS = 'status'
 }
+
+export type NameState = {
+  firstName: string
+  lastName: string
+}
