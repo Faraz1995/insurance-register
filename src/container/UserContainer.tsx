@@ -3,6 +3,7 @@ import BottomDrawer from '../components/BottomDrawer'
 import Button from '../components/Button'
 import { useEffect } from 'react'
 import { inquiryUserApi } from '../api'
+import { toast } from 'react-toastify'
 
 const UserContainer = () => {
   const navigate = useNavigate()
@@ -16,7 +17,7 @@ const UserContainer = () => {
         console.log(res)
       },
       (e) => {
-        console.log(e)
+        toast.error(e.response?.data?.error_details?.fa_details)
       }
     )
   }, [])

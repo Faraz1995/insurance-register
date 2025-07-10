@@ -1,5 +1,20 @@
 import { AxiosError, type AxiosResponse } from 'axios'
 import axiosInstance from '../util/axios'
+
+interface ApiErrorResponse {
+  status_code: number
+  message: string
+  is_success: boolean
+  error_details: {
+    type: string
+    code: string
+    detail: string
+    attr: null | string
+    fa_details: string
+  }
+  response: null
+}
+
 type SendOtpPayload = {
   phone_number: string
 }
@@ -27,7 +42,7 @@ type RegisterPayload = {
 export const sendOtpApi = (
   payload: SendOtpPayload,
   success: (res: AxiosResponse) => void,
-  error: (err: AxiosError) => void
+  error: (err: AxiosError<ApiErrorResponse>) => void
 ) => {
   const url =
     'https://stage.api.sanaap.co/api/v2/app/DEY/agent/verification/signup/create_otp/'
@@ -44,7 +59,7 @@ export const sendOtpApi = (
 export const validateOtpApi = (
   payload: ValidateOtpPayload,
   success: (res: AxiosResponse) => void,
-  error: (err: AxiosError) => void
+  error: (err: AxiosError<ApiErrorResponse>) => void
 ) => {
   const url =
     'https://stage.api.sanaap.co/api/v2/app/DEY/agent/verification/signup/validate_otp/'
@@ -62,7 +77,7 @@ export const validateAgencyCodeApi = (
     agent_code: string
   },
   success: (res: AxiosResponse) => void,
-  error: (err: AxiosError) => void
+  error: (err: AxiosError<ApiErrorResponse>) => void
 ) => {
   const url =
     'https://stage.api.sanaap.co/api/v2/app/DEY/agent/verification/signup/check_agency_code/'
@@ -78,7 +93,7 @@ export const validateAgencyCodeApi = (
 
 export const provinceListApi = (
   success: (res: AxiosResponse) => void,
-  error: (err: AxiosError) => void
+  error: (err: AxiosError<ApiErrorResponse>) => void
 ) => {
   const url = 'https://stage.api.sanaap.co/base/provinces_wop/'
 
@@ -93,7 +108,7 @@ export const provinceListApi = (
 export const countryListApi = (
   province: string,
   success: (res: AxiosResponse) => void,
-  error: (err: AxiosError) => void
+  error: (err: AxiosError<ApiErrorResponse>) => void
 ) => {
   const url = 'https://stage.api.sanaap.co/base/counties_wop/'
 
@@ -114,7 +129,7 @@ export const insuranceBranchApi = (
     province: string
   },
   success: (res: AxiosResponse) => void,
-  error: (err: AxiosError) => void
+  error: (err: AxiosError<ApiErrorResponse>) => void
 ) => {
   const url =
     'https://stage.api.sanaap.co/api/v2/app/selection_item/insurance_branch/wop_list/'
@@ -132,7 +147,7 @@ export const insuranceBranchApi = (
 export const registerUserApi = (
   payload: RegisterPayload,
   success: (res: AxiosResponse) => void,
-  error: (err: AxiosError) => void
+  error: (err: AxiosError<ApiErrorResponse>) => void
 ) => {
   const url = '/api/api/v2/app/DEY/agent/verification/signup/'
 
@@ -147,7 +162,7 @@ export const registerUserApi = (
 
 export const inquiryUserApi = (
   success: (res: AxiosResponse) => void,
-  error: (err: AxiosError) => void
+  error: (err: AxiosError<ApiErrorResponse>) => void
 ) => {
   const url = 'https://stage.api.sanaap.co/api/v2/app/DEY/agent/app_user_status/'
   axiosInstance({

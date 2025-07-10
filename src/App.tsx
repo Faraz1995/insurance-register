@@ -7,6 +7,7 @@ import OtepStep from './container/OtpStep'
 import NameStep from './container/NameStep'
 import { useForm } from 'react-hook-form'
 import InfoStep from './container/InfoStep'
+import { toast } from 'react-toastify'
 
 function App() {
   const [phoneNumber, setPhoneNumber] = useState('')
@@ -25,9 +26,9 @@ function App() {
           setLoadingPhoneNumber(false)
           setStep(Steps.OTP)
         },
-        (err) => {
+        (e) => {
           setLoadingPhoneNumber(false)
-          console.log(err)
+          toast.error(e.response?.data?.error_details?.fa_details || 'خطایی رخ داده است')
         }
       )
     }
