@@ -1,5 +1,11 @@
+@font-face {
+  font-family: Iran;
+  src: url('/public/fonts/font.woff2');
+}
+
 @import 'tailwindcss';
 
 @theme {
   --color-separ-primary: #017785;
+  --font-Iran: Iran, 'sans-serif';
 }
