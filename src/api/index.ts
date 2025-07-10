@@ -1,5 +1,5 @@
-import axios, { AxiosError, type AxiosResponse } from 'axios'
-
+import { AxiosError, type AxiosResponse } from 'axios'
+import axiosInstance from '../util/axios'
 type SendOtpPayload = {
   phone_number: string
 }
@@ -32,7 +32,7 @@ export const sendOtpApi = (
   const url =
     'https://stage.api.sanaap.co/api/v2/app/DEY/agent/verification/signup/create_otp/'
 
-  axios({
+  axiosInstance({
     url,
     method: 'post',
     data: payload
@@ -48,7 +48,7 @@ export const validateOtpApi = (
 ) => {
   const url =
     'https://stage.api.sanaap.co/api/v2/app/DEY/agent/verification/signup/validate_otp/'
-  axios({
+  axiosInstance({
     url,
     method: 'post',
     data: payload
@@ -67,7 +67,7 @@ export const validateAgencyCodeApi = (
   const url =
     'https://stage.api.sanaap.co/api/v2/app/DEY/agent/verification/signup/check_agency_code/'
 
-  axios({
+  axiosInstance({
     url,
     method: 'post',
     data: payload
@@ -82,7 +82,7 @@ export const provinceListApi = (
 ) => {
   const url = 'https://stage.api.sanaap.co/base/provinces_wop/'
 
-  axios({
+  axiosInstance({
     url,
     method: 'get'
   })
@@ -97,7 +97,7 @@ export const countryListApi = (
 ) => {
   const url = 'https://stage.api.sanaap.co/base/counties_wop/'
 
-  axios({
+  axiosInstance({
     url,
     method: 'get',
     params: {
@@ -120,7 +120,7 @@ export const insuranceBranchApi = (
     'https://stage.api.sanaap.co/api/v2/app/selection_item/insurance_branch/wop_list/'
   const requestParams = { ...params, insurance: 'DEY' }
 
-  axios({
+  axiosInstance({
     url,
     method: 'get',
     params: requestParams
@@ -136,10 +136,23 @@ export const registerUserApi = (
 ) => {
   const url = '/api/api/v2/app/DEY/agent/verification/signup/'
 
-  axios({
+  axiosInstance({
     url,
     method: 'post',
     data: payload
+  })
+    .then(success)
+    .catch(error)
+}
+
+export const inquiryUserApi = (
+  success: (res: AxiosResponse) => void,
+  error: (err: AxiosError) => void
+) => {
+  const url = 'https://stage.api.sanaap.co/api/v2/app/DEY/agent/app_user_status/'
+  axiosInstance({
+    method: 'get',
+    url
   })
     .then(success)
     .catch(error)
