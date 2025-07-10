@@ -5,25 +5,29 @@ import {
   type CountryResponse,
   type InfoState,
   type InsuranceBranchResponse,
+  type NameState,
   type ProvinceReponse
 } from '../util/types'
 import TextInput from '../components/TextInput'
-import { type SubmitHandler, type UseFormReturn } from 'react-hook-form'
+import { useForm, type SubmitHandler, type UseFormReturn } from 'react-hook-form'
 import SelectInput from '../components/SelectInput'
 import {
   countryListApi,
   insuranceBranchApi,
   provinceListApi,
+  registerUserApi,
   validateAgencyCodeApi
 } from '../api'
 import PhoneInput from '../components/PhoneInput'
 import RadioInput from '../components/RadioInput'
 import CheckIcon from '../assets/CheckIcon'
 import CrossIcon from '../assets/CrossIcon'
+import { parsePhoneNumber } from '../util'
 
 type Props = {
   setStep: React.Dispatch<React.SetStateAction<Steps>>
-  form: UseFormReturn<InfoState>
+  nameForm: UseFormReturn<NameState>
+  phoneNumber: string
 }
 
 type Options = {
@@ -31,12 +35,19 @@ type Options = {
   value: string
 }
 
-const InfoStep = ({ form }: Props) => {
+const InfoStep = ({ nameForm, phoneNumber }: Props) => {
   const [provinceList, setProvinceList] = useState<Options[]>([])
   const [countryList, setCountryList] = useState<Options[]>([])
   const [inquiryAgentResult, setInquiryAgentResult] = useState<'valid' | 'invalid' | ''>(
     ''
   )
+
+  const infoForm = useForm<InfoState>({
+    defaultValues: {
+      province: '',
+      country: ''
+    }
+  })
 
   useEffect(() => {
     if (provinceList.length === 0) {
@@ -60,20 +71,43 @@ const InfoStep = ({ form }: Props) => {
     handleSubmit,
     formState: { errors },
     watch
-  } = form
+  } = infoForm
 
+  const insurance_branch = infoForm.watch('insurance_branch')
   const submitName: SubmitHandler<InfoState> = () => {
-    console.log('here submit************')
-    console.log('submitName')
-    // setStep(Steps.INFO)
-    console.log(form.getValues())
+    const nameInfo = nameForm.getValues()
+    const infos = infoForm.getValues()
+
+    const payload = {
+      agent_code: infos.agent_code,
+      phone: infos.phone,
+      province: infos.province,
+      agency_type: infos.agency_type,
+      Name: infos.Name,
+      first_name: nameInfo.firstName,
+      last_name: nameInfo.lastName,
+      phone_number: parsePhoneNumber(phoneNumber),
+      insurance_branch,
+      county: infos.country,
+      address: 'آدرس',
+      city_code: infos.phone.substring(0, 3)
+    }
+    registerUserApi(
+      payload,
+      (res) => {
+        console.log(res)
+      },
+      (e) => {
+        console.log(e)
+      }
+    )
   }
 
   const provinceId = watch('province')
   const agency_type = watch('agency_type')
 
   useEffect(() => {
-    form.resetField('country')
+    infoForm.resetField('country')
     if (provinceId) {
       countryListApi(
         provinceId,
@@ -127,9 +161,8 @@ const InfoStep = ({ form }: Props) => {
     if (e.target.value.trim()) {
       validateAgencyCodeApi(
         { agent_code: e.target.value },
-        (res) => {
+        () => {
           setInquiryAgentResult('valid')
-          console.log(res)
         },
         (e) => {
           setInquiryAgentResult('invalid')
@@ -139,8 +172,7 @@ const InfoStep = ({ form }: Props) => {
     }
   }
 
-  console.log(watch('insurance_branch'))
-  console.log(watch('phone'))
+  console.log('branch===============', insurance_branch)
 
   return (
     <form onSubmit={handleSubmit(submitName)}>

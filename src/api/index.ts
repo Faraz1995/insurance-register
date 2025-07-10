@@ -9,6 +9,21 @@ type ValidateOtpPayload = {
   code: string
 }
 
+type RegisterPayload = {
+  address: string
+  agency_type: 'real' | 'legal'
+  agent_code: string
+  city_code: string
+  county: string
+  first_name: string
+  insurance_branch: string
+  last_name: string
+  phone: string
+  phone_number: string
+  province: string
+  Name?: string
+}
+
 export const sendOtpApi = (
   payload: SendOtpPayload,
   success: (res: AxiosResponse) => void,
@@ -109,6 +124,22 @@ export const insuranceBranchApi = (
     url,
     method: 'get',
     params: requestParams
+  })
+    .then(success)
+    .catch(error)
+}
+
+export const registerUserApi = (
+  payload: RegisterPayload,
+  success: (res: AxiosResponse) => void,
+  error: (err: AxiosError) => void
+) => {
+  const url = '/api/api/v2/app/DEY/agent/verification/signup/'
+
+  axios({
+    url,
+    method: 'post',
+    data: payload
   })
     .then(success)
     .catch(error)

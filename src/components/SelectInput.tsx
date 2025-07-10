@@ -14,7 +14,7 @@ interface SelectInputProps
   searchable?: boolean
   fetchOptions?: (query: string) => Promise<Option[]>
   onChange?: (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => void
-  onBlur?: (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => void // Add onBlur
+  onBlur?: (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => void
   name?: string
 }
 
@@ -30,7 +30,7 @@ const SelectInput = React.forwardRef<
       value,
       name,
       onChange,
-      onBlur, // Add onBlur
+      onBlur,
       options = [],
       searchable = false,
       fetchOptions,
@@ -43,22 +43,44 @@ const SelectInput = React.forwardRef<
     const [query, setQuery] = useState('')
     const [showDropdown, setShowDropdown] = useState(false)
     const debounceRef = useRef<number | null>(null)
+    const [selectedValue, setSelectedValue] = useState(value ?? '')
 
-    // Fetch options when searchable
+    // keep selectedValue in sync with value from props
     useEffect(() => {
-      if (!searchable || !fetchOptions) return
+      setSelectedValue(value ?? '')
+    }, [value])
+
+    // handle fetching options when query is typed
+    useEffect(() => {
+      if (!searchable || !fetchOptions || !query.trim()) return
 
       if (debounceRef.current) clearTimeout(debounceRef.current)
 
       debounceRef.current = setTimeout(async () => {
         const fetched = await fetchOptions(query)
         setInternalOptions(fetched)
-      }, 1000)
+      }, 500)
 
       return () => {
         if (debounceRef.current) clearTimeout(debounceRef.current)
       }
     }, [query, fetchOptions, searchable])
+
+    const handleOptionSelect = (opt: Option) => {
+      setQuery(opt.label)
+      setSelectedValue(opt.value)
+      setShowDropdown(false)
+
+      if (onChange && name) {
+        const fakeEvent = {
+          target: {
+            name,
+            value: opt.value
+          }
+        } as unknown as React.ChangeEvent<HTMLSelectElement>
+        onChange(fakeEvent)
+      }
+    }
 
     return (
       <div className={`w-full relative ${className}`}>
@@ -72,35 +94,19 @@ const SelectInput = React.forwardRef<
               onChange={(e) => {
                 setQuery(e.target.value)
                 setShowDropdown(true)
-                // Also call the onChange from register to update form state
-                if (onChange) {
-                  onChange({
-                    target: { value: e.target.value, name, type: 'text' }
-                  } as React.ChangeEvent<HTMLInputElement>)
-                }
               }}
-              onBlur={onBlur} // Add onBlur handler
               placeholder={placeholder}
               disabled={disabled}
               name={name}
-              ref={ref as React.Ref<HTMLInputElement>}
               className='w-full px-3 py-3 text-sm text-gray-900 bg-white border rounded-lg shadow-sm outline-none focus:border-separ-primary focus:ring-1'
             />
 
             {showDropdown && internalOptions.length > 0 && (
-              <div className='absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-48 overflow-auto'>
+              <div className='absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-[200px] overflow-y-auto'>
                 {internalOptions.map((opt) => (
                   <div
                     key={opt.value}
-                    onClick={() => {
-                      if (onChange) {
-                        onChange({
-                          target: { value: opt.value, name, type: 'select-one' }
-                        } as React.ChangeEvent<HTMLSelectElement>)
-                      }
-                      setQuery(opt.label)
-                      setShowDropdown(false)
-                    }}
+                    onMouseDown={() => handleOptionSelect(opt)} // use onMouseDown to prevent blur
                     className='px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'
                   >
                     {opt.label}
@@ -114,9 +120,12 @@ const SelectInput = React.forwardRef<
             <select
               name={name}
               ref={ref as React.Ref<HTMLSelectElement>}
-              value={value}
-              onChange={onChange}
-              onBlur={onBlur} // Add onBlur handler
+              value={selectedValue}
+              onChange={(e) => {
+                setSelectedValue(e.target.value)
+                onChange?.(e)
+              }}
+              onBlur={onBlur}
               disabled={disabled}
               {...rest}
               className='flex-1 px-3 py-3 text-sm text-gray-900 bg-transparent border-none outline-none disabled:bg-gray-50 disabled:text-gray-500 appearance-none'

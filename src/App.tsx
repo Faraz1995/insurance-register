@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { sendOtpApi } from './api'
 import { parsePhoneNumber } from './util'
 import PhoneNumberStep from './container/PhoneNumberStep'
-import { Steps, type InfoState, type NameState } from './util/types'
+import { Steps, type NameState } from './util/types'
 import OtepStep from './container/OtpStep'
 import NameStep from './container/NameStep'
 import { useForm } from 'react-hook-form'
@@ -14,12 +14,6 @@ function App() {
   const [loadingPhoneNumber, setLoadingPhoneNumber] = useState(false)
 
   const nameForm = useForm<NameState>()
-  const infoForm = useForm<InfoState>({
-    defaultValues: {
-      province: '',
-      country: ''
-    }
-  })
 
   const submitPhone = () => {
     if (phoneNumber) {
@@ -59,7 +53,9 @@ function App() {
       case Steps.NAME:
         return <NameStep form={nameForm} setStep={setStep} />
       case Steps.INFO:
-        return <InfoStep form={infoForm} setStep={setStep} />
+        return (
+          <InfoStep nameForm={nameForm} setStep={setStep} phoneNumber={phoneNumber} />
+        )
       default:
         return (
           <PhoneNumberStep

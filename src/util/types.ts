@@ -11,7 +11,7 @@ export type NameState = {
   lastName: string
 }
 
-export type InfoState = NameState & {
+export type InfoState = {
   agency_type: 'real' | 'legal'
   agent_code: string
   city_code: string
@@ -21,6 +21,7 @@ export type InfoState = NameState & {
   phone_number: string
   phone: string
   Name?: string
+  address: string
 }
 
 export type CreatorUser = {
