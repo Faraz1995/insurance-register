@@ -80,16 +80,6 @@ const InfoStep = ({ nameForm, phoneNumber }: Props) => {
     watch
   } = infoForm
 
-  useEffect(() => {
-    const refresh =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1MzQzNDkxMiwianRpIjoiYTE4OTMxNTJiODhmNGQ0OTg2NmZkMzQzM2Y4N2UzNGYiLCJ1c2VyX2lkIjozMDA1NDQsImZpcnN0X25hbWUiOiJmYiIsImxhc3RfbmFtZSI6ImZibm1lIiwicGhvbmVfbnVtYmVyIjoiMDkxMjczODU5NjgiLCJhcHBfbmFtZSI6IkRFWV9hZ2VudCIsImFnZW5jeV9pZCI6bnVsbCwiYWdlbnRfY29kZSI6bnVsbCwiaXNfbWFuYWdlciI6dHJ1ZSwiaW5zdXJhbmNlIjpudWxsLCJyb2xlIjoiaW5zdXJhbmNlX2FnZW50In0.t_jT9OxW2pFZAK29CiRFYXItjMhyi2sxqh_DMU0Q79k'
-    const access =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzMDAyOTEyLCJqdGkiOiI5ZjEwMjFjMDUxMzE0ZDUwYmIyNTI3MGVkZjJiMzMyMiIsInVzZXJfaWQiOjMwMDU0NCwiZmlyc3RfbmFtZSI6ImZiIiwibGFzdF9uYW1lIjoiZmJubWUiLCJwaG9uZV9udW1iZXIiOiIwOTEyNzM4NTk2OCIsImFwcF9uYW1lIjoiREVZX2FnZW50IiwiYWdlbmN5X2lkIjpudWxsLCJhZ2VudF9jb2RlIjpudWxsLCJpc19tYW5hZ2VyIjp0cnVlLCJpbnN1cmFuY2UiOm51bGwsInJvbGUiOiJpbnN1cmFuY2VfYWdlbnQifQ.hoH8QvQRH9S3VuxU7W_erMHIcwa3Jx8rb4xbhUANGdQ'
-    Cookies.set('access_token', access)
-    Cookies.set('refresh_token', refresh)
-    navigate('user')
-  })
-
   const insurance_branch = infoForm.watch('insurance_branch')
   const registerUser: SubmitHandler<InfoState> = () => {
     const nameInfo = nameForm.getValues()
