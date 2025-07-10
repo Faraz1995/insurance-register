@@ -42,6 +42,25 @@ export const validateOtpApi = (
     .catch(error)
 }
 
+export const validateAgencyCodeApi = (
+  payload: {
+    agent_code: string
+  },
+  success: (res: AxiosResponse) => void,
+  error: (err: AxiosError) => void
+) => {
+  const url =
+    'https://stage.api.sanaap.co/api/v2/app/DEY/agent/verification/signup/check_agency_code/'
+
+  axios({
+    url,
+    method: 'post',
+    data: payload
+  })
+    .then(success)
+    .catch(error)
+}
+
 export const provinceListApi = (
   success: (res: AxiosResponse) => void,
   error: (err: AxiosError) => void

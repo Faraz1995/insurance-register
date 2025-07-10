@@ -10,9 +10,16 @@ import {
 import TextInput from '../components/TextInput'
 import { type SubmitHandler, type UseFormReturn } from 'react-hook-form'
 import SelectInput from '../components/SelectInput'
-import { countryListApi, insuranceBranchApi, provinceListApi } from '../api'
+import {
+  countryListApi,
+  insuranceBranchApi,
+  provinceListApi,
+  validateAgencyCodeApi
+} from '../api'
 import PhoneInput from '../components/PhoneInput'
 import RadioInput from '../components/RadioInput'
+import CheckIcon from '../assets/CheckIcon'
+import CrossIcon from '../assets/CrossIcon'
 
 type Props = {
   setStep: React.Dispatch<React.SetStateAction<Steps>>
@@ -27,6 +34,9 @@ type Options = {
 const InfoStep = ({ form }: Props) => {
   const [provinceList, setProvinceList] = useState<Options[]>([])
   const [countryList, setCountryList] = useState<Options[]>([])
+  const [inquiryAgentResult, setInquiryAgentResult] = useState<'valid' | 'invalid' | ''>(
+    ''
+  )
 
   useEffect(() => {
     if (provinceList.length === 0) {
@@ -108,6 +118,20 @@ const InfoStep = ({ form }: Props) => {
     })
   }
 
+  const checkAgencyCode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    validateAgencyCodeApi(
+      { agent_code: e.target.value },
+      (res) => {
+        setInquiryAgentResult('valid')
+        console.log(res)
+      },
+      (e) => {
+        setInquiryAgentResult('invalid')
+        console.log(e)
+      }
+    )
+  }
+
   console.log(watch('insurance_branch'))
   console.log(watch('phone'))
 
@@ -116,68 +140,106 @@ const InfoStep = ({ form }: Props) => {
       <TextInput
         label={'کد نمایندگی'}
         placeholder='کد نمایندگی را وارد کنید'
+        isLtr
+        rightIcon={
+          inquiryAgentResult === 'valid' ? (
+            <CheckIcon />
+          ) : inquiryAgentResult === 'invalid' ? (
+            <CrossIcon />
+          ) : null
+        }
         {...register('agent_code', {
+          onBlur: checkAgencyCode,
           required: 'کد نمایندگی را وارد کنید'
         })}
       />
+      {errors.agent_code && (
+        <p className='mt-1 text-red-500 text-sm'>{errors.agent_code.message}</p>
+      )}
+      <div>
+        <SelectInput
+          label='استان'
+          placeholder='استان را انتخاب کنید'
+          {...register('province', {
+            required: 'استان را انتخاب کنید'
+          })}
+          className='mt-4'
+          disabled={provinceList.length === 0}
+          options={provinceList}
+        />
+        {errors.province && (
+          <p className='mt-1 text-red-500 text-sm'>{errors.province.message}</p>
+        )}
+      </div>
 
-      <SelectInput
-        label='استان'
-        placeholder='استان را انتخاب کنید'
-        {...register('province', {
-          required: 'استان را انتخاب کنید'
-        })}
-        className='mt-4'
-        disabled={provinceList.length === 0}
-        options={provinceList}
-      />
+      <div>
+        <SelectInput
+          label='شهر'
+          placeholder='شهر را انتخاب کنید'
+          {...register('country', {
+            required: 'شهر را انتخاب کنید'
+          })}
+          className='mt-4'
+          disabled={countryList.length === 0 && !provinceId}
+          options={countryList}
+        />
+        {errors.country && (
+          <p className='mt-1 text-red-500 text-sm'>{errors.country.message}</p>
+        )}
+      </div>
+      <div>
+        <SelectInput
+          label={'کد نمایندگی'}
+          placeholder='کد نمایندگی را وارد کنید'
+          {...register('insurance_branch', {
+            required: 'کد نمایندگی را وارد کنید'
+          })}
+          searchable
+          fetchOptions={fetchBranches}
+          className='mt-4'
+        />
+        {errors.insurance_branch && (
+          <p className='mt-1 text-red-500 text-sm'>{errors.insurance_branch.message}</p>
+        )}
+      </div>
 
-      <SelectInput
-        label='شهر'
-        placeholder='شهر را انتخاب کنید'
-        {...register('country', {
-          required: 'شهر را انتخاب کنید'
-        })}
-        className='mt-4'
-        disabled={countryList.length === 0 && !provinceId}
-        options={countryList}
-      />
-
-      <SelectInput
-        label={'کد نمایندگی'}
-        placeholder='کد نمایندگی را وارد کنید'
-        {...register('insurance_branch', {
-          required: 'کد نمایندگی را وارد کنید'
-        })}
-        searchable
-        fetchOptions={fetchBranches}
-        className='mt-4'
-      />
-
-      <PhoneInput
-        label='تلفن ثابت'
-        className='mt-4'
-        defaultCountryCode='021'
-        {...register('phone', {
-          required: 'تلفن ثابت اجباری است'
-        })}
-      />
+      <div>
+        <PhoneInput
+          label='تلفن ثابت'
+          className='mt-4'
+          defaultCountryCode='021'
+          {...register('phone', {
+            required: 'تلفن ثابت اجباری است'
+          })}
+        />
+        {errors.phone && (
+          <p className='mt-1 text-red-500 text-sm'>{errors.phone.message}</p>
+        )}
+      </div>
 
       <div className='flex gap-6 mt-4'>
         <p>نوع نمایندگی</p>
         <RadioInput label='حقیقی' value='real' {...register('agency_type')} />
         <RadioInput label='حقوقی' value='legal' {...register('agency_type')} />
       </div>
+      {errors.agency_type && (
+        <p className='mt-1 text-red-500 text-sm'>{errors.agency_type.message}</p>
+      )}
 
       {agency_type === 'legal' && (
-        <TextInput
-          label='نام نمایندگی'
-          placeholder='نام نمایندگی را وارد کنید'
-          {...register('Name', {
-            required: 'نام نمایندگی را وارد کنید'
-          })}
-          className='mt-4'
-        />
+        <div>
+          <TextInput
+            label='نام نمایندگی'
+            placeholder='نام نمایندگی را وارد کنید'
+            {...register('Name', {
+              required: 'نام نمایندگی را وارد کنید'
+            })}
+            className='mt-4'
+          />
+          {errors.Name && (
+            <p className='mt-1 text-red-500 text-sm'>{errors.Name.message}</p>
+          )}
+        </div>
       )}
 
       <Button
