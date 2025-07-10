@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 
 function App() {
   const [phoneNumber, setPhoneNumber] = useState('')
-  const [step, setStep] = useState(Steps.INFO)
+  const [step, setStep] = useState(Steps.PHONE_NUMBER)
   const [loadingPhoneNumber, setLoadingPhoneNumber] = useState(false)
 
   const nameForm = useForm<NameState>()
