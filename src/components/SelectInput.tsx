@@ -53,7 +53,7 @@ const SelectInput = React.forwardRef<
       debounceRef.current = setTimeout(async () => {
         const fetched = await fetchOptions(query)
         setInternalOptions(fetched)
-      }, 400)
+      }, 1000)
 
       return () => {
         if (debounceRef.current) clearTimeout(debounceRef.current)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Button from '../components/Button'
 import {
   Steps,
@@ -91,36 +91,37 @@ const InfoStep = ({ form }: Props) => {
     }
   }, [provinceId])
 
-  const fetchBranches = async (
-    query: string
-  ): Promise<{ label: string; value: string }[]> => {
-    if (!provinceId) {
-      return []
-    }
-    if (!query) {
-      return []
-    }
+  const fetchBranches = useCallback(
+    async (query: string): Promise<{ label: string; value: string }[]> => {
+      if (!provinceId) {
+        return []
+      }
+      if (!query) {
+        return []
+      }
 
-    return new Promise((resolve, reject) => {
-      insuranceBranchApi(
-        {
-          name: query,
-          province: provinceId
-        },
-        (res) => {
-          const result = res.data?.response?.map((item: InsuranceBranchResponse) => ({
-            label: item.name,
-            value: item.id
-          }))
-          resolve(result)
-        },
-        (err) => {
-          console.error('Failed to fetch branches', err)
-          reject(err)
-        }
-      )
-    })
-  }
+      return new Promise((resolve, reject) => {
+        insuranceBranchApi(
+          {
+            name: query,
+            province: provinceId
+          },
+          (res) => {
+            const result = res.data?.response?.map((item: InsuranceBranchResponse) => ({
+              label: item.name,
+              value: item.id
+            }))
+            resolve(result)
+          },
+          (err) => {
+            console.error('Failed to fetch branches', err)
+            reject(err)
+          }
+        )
+      })
+    },
+    [provinceId]
+  ) // Only recreate when provinceId changes
 
   const checkAgencyCode = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.trim()) {
