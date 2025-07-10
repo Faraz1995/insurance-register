@@ -14,7 +14,12 @@ function App() {
   const [loadingPhoneNumber, setLoadingPhoneNumber] = useState(false)
 
   const nameForm = useForm<NameState>()
-  const infoForm = useForm<InfoState>()
+  const infoForm = useForm<InfoState>({
+    defaultValues: {
+      province: '',
+      country: ''
+    }
+  })
 
   const submitPhone = () => {
     if (phoneNumber) {

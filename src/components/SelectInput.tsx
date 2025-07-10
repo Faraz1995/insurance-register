@@ -121,7 +121,7 @@ const SelectInput = React.forwardRef<
               {...rest}
               className='flex-1 px-3 py-3 text-sm text-gray-900 bg-transparent border-none outline-none disabled:bg-gray-50 disabled:text-gray-500 appearance-none'
             >
-              <option value='' disabled hidden>
+              <option value='' disabled>
                 {placeholder}
               </option>
               {options.map((opt) => (

@@ -69,12 +69,11 @@ const InfoStep = ({ form }: Props) => {
     console.log(form.getValues())
   }
 
-  console.log(errors)
-
   const provinceId = watch('province')
   const agency_type = watch('agency_type')
 
   useEffect(() => {
+    form.resetField('country')
     if (provinceId) {
       countryListApi(
         provinceId,
@@ -95,7 +94,12 @@ const InfoStep = ({ form }: Props) => {
   const fetchBranches = async (
     query: string
   ): Promise<{ label: string; value: string }[]> => {
-    if (!provinceId && !query) return []
+    if (!provinceId) {
+      return []
+    }
+    if (!query) {
+      return []
+    }
 
     return new Promise((resolve, reject) => {
       insuranceBranchApi(
@@ -119,17 +123,19 @@ const InfoStep = ({ form }: Props) => {
   }
 
   const checkAgencyCode = (e: React.ChangeEvent<HTMLInputElement>) => {
-    validateAgencyCodeApi(
-      { agent_code: e.target.value },
-      (res) => {
-        setInquiryAgentResult('valid')
-        console.log(res)
-      },
-      (e) => {
-        setInquiryAgentResult('invalid')
-        console.log(e)
-      }
-    )
+    if (e.target.value.trim()) {
+      validateAgencyCodeApi(
+        { agent_code: e.target.value },
+        (res) => {
+          setInquiryAgentResult('valid')
+          console.log(res)
+        },
+        (e) => {
+          setInquiryAgentResult('invalid')
+          console.log(e)
+        }
+      )
+    }
   }
 
   console.log(watch('insurance_branch'))
